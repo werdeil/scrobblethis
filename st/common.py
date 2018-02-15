@@ -16,29 +16,30 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA 02110-1301, USA.
 
-version = "0.4.3"
-    
 import os
+
+version = "0.4.3"
+
 try:
     import configparser
 except ImportError:
     import ConfigParser as configparser
 
-#basedir.xdg_config_dirs.insert(0, "./configs")  # for debugging only
+# basedir.xdg_config_dirs.insert(0, "./configs")  # for debugging only
 
 def _get_config_path(*resources):
     """
         Returns a path to a configs file
         according to the xdg standards.
     """
-    
+
     if "XDG_CONFIG_HOME" in os.environ:
         base = os.path.join(os.environ["XDG_CONFIG_HOME"], "scrobblethis")
     else:
         base = os.path.expanduser("~/.config/scrobblethis")
-    
+
     path = base
     for resource in resources:
         path = os.path.join(path, resource)
-    
+
     return path
