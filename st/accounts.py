@@ -1,6 +1,6 @@
-# 
+#
 # Copyright 2009 Amr Hassan <amr.hassan@gmail.com>
-# 
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -26,6 +26,11 @@ try:
 except ImportError:
     import ConfigParser as configparser
 
+# scrobblethis
+API_KEY    = 'b1f2c888bff831d32b7c2598226eaf0f'
+API_SECRET = '3d5bbb9bf2a7ad3e175af8a414c2ea5f'
+# Registered to werdeil
+
 class Account(object):
     def __init__(self, name, server, username, password, password_hash, submit_url, client_version):
 
@@ -37,23 +42,22 @@ class Account(object):
             password_hash = hashlib.md5(password).hexdigest()
 
         if server == "lastfm":
-            self.network = pylast.get_lastfm_network(username = username, password_hash = password_hash)
+            self.network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET, username = username, password_hash = password_hash)
         elif server == "librefm":
-            self.network = pylast.get_librefm_network(username = username, password_hash = password_hash)
+            self.network = pylast.LibreFMNetwork(api_key=API_KEY, api_secret=API_SECRET, username = username, password_hash = password_hash)
         elif server == "custom":
-            self.network = pylast.get_lastfm_network(username = username, password_hash = password_hash)
+            self.network = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET, username = username, password_hash = password_hash)
             self.network.submission_server = submit_url
 
-        self.scrobbler = self.network.get_scrobbler("sth", client_version)
         self.cache = []
 
-    def add_to_scrbble_cache(self, track):
+    def add_to_scrobble_cache(self, track):
         self.cache.append([track.artist, track.title, track.timestamp, pylast.SCROBBLE_SOURCE_USER,
                            pylast.SCROBBLE_MODE_PLAYED, track.duration, track.album, track.position,
                            track.musicbrainz])
 
     def scrobble(self):
-        self.scrobbler.scrobble_many(self.cache)
+        self.network.scrobble_many(self.cache)
 
     def __repr__(self):
         return self.name
@@ -61,7 +65,7 @@ class Account(object):
 def get_accounts():
     c = configparser.ConfigParser(defaults={"password": "", "md5_password_hash": "", "submit_url": ""})
 
-    accounts_config_path = st.common._get_config_path("accounts.config")
+    accounts_config_path = st.common.get_config_path("accounts.config")
 
     l = []
     if os.path.exists(accounts_config_path):
@@ -109,7 +113,7 @@ def write_default_accounts():
 #md5_password_hash = """
 
 
-    path = st.common._get_config_path("accounts.config")
+    path = st.common.get_config_path("accounts.config")
 
     if os.path.exists(path):
         return

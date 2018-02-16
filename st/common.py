@@ -27,7 +27,7 @@ except ImportError:
 
 # basedir.xdg_config_dirs.insert(0, "./configs")  # for debugging only
 
-def _get_config_path(*resources):
+def get_config_path(*resources):
     """
         Returns a path to a configs file
         according to the xdg standards.

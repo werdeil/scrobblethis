@@ -73,13 +73,13 @@ def parse(path):
 
 def _get_history():
     try:
-        fp = open(st.common._get_config_path("history"))
+        fp = open(st.common.get_config_path("history"))
         return json.load(fp)
     except IOError:
         return []
 
 def _add_to_history(*paths):
-    json.dump(list(set(paths)), open(st.common._get_config_path("history"), "w"))
+    json.dump(list(set(paths)), open(st.common.get_config_path("history"), "w"))
 
 def get_paths(*paths):
     """
