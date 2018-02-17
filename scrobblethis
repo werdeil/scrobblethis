@@ -1,8 +1,11 @@
 #! /usr/bin/python
 
+import os
+import sys
+import optparse
+
 import st.common as common
 import st.log as log
-import optparse, sys, os
 import st.accounts as accounts
 import st.relativetime as relativetime
 
@@ -24,8 +27,8 @@ def main():
     (OPTIONS, args) = parser.parse_args()
 
     # read the accounts
-    acs = accounts.get_accounts()
-    if len(acs) < 1:
+    accounts_to_scrobble = accounts.get_accounts()
+    if len(accounts_to_scrobble) < 1:
         accounts.write_default_accounts()
         say("Error:\n"+
             "Could not find any account information.\n"+
@@ -48,16 +51,16 @@ def main():
         for track in tracks:
             say(" [%s] %s - %s " %(relativetime.get_relative_time(track.timestamp), track.artist, track.title))
 
-            for ac in acs:
+            for account_to_scrobble in accounts_to_scrobble:
                 # add to the list of tracks to be scrobbled
-                ac.add_to_scrbble_cache(track)
+                account_to_scrobble.add_to_scrobble_cache(track)
 
         say("")
 
         # now submit
-        for ac in acs:
-            say("Submitting %d tracks to %s..." %(len(ac.cache), ac.username + "@" + ac.type))
-            ac.scrobble()
+        for account_to_scrobble in accounts_to_scrobble:
+            say("Submitting %d tracks to %s..." %(len(account_to_scrobble.cache), account_to_scrobble.username + "@" + account_to_scrobble.server))
+            account_to_scrobble.scrobble()
 
     # success
     say ("\nAll tracks were scrobbled successfully.")

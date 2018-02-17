@@ -52,9 +52,15 @@ class Account(object):
         self.cache = []
 
     def add_to_scrobble_cache(self, track):
-        self.cache.append([track.artist, track.title, track.timestamp, pylast.SCROBBLE_SOURCE_USER,
-                           pylast.SCROBBLE_MODE_PLAYED, track.duration, track.album, track.position,
-                           track.musicbrainz])
+        self.cache.append({"artist": track.artist,
+                           "title": track.title,
+                           "timestamp": track.timestamp,
+                           "source": pylast.SCROBBLE_SOURCE_USER,
+                           "mode": pylast.SCROBBLE_MODE_PLAYED,
+                           "duration": track.duration,
+                           "album": track.album,
+                           "track_number": track.position,
+                           "mbid": track.musicbrainz})
 
     def scrobble(self):
         self.network.scrobble_many(self.cache)

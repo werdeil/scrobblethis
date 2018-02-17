@@ -62,6 +62,9 @@ def parse(path):
     tracks = []
     for line in lines[3:]:
         v = line.split('\t')
+        if len(v) == 1:
+            # Case separator is not tab but ', '
+            v = line.split(', ')
         if len(v) < 8:
             v = v + [""]*(8-len(v)) # pad v with empty strings
         v[6] = str(int(v[6]) - tz_offset)
