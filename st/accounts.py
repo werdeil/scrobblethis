@@ -69,25 +69,25 @@ class Account(object):
         return self.name
 
 def get_accounts():
-    c = configparser.ConfigParser(defaults={"password": "", "md5_password_hash": "", "submit_url": ""})
+    config = configparser.ConfigParser(defaults={"password": "", "md5_password_hash": "", "submit_url": ""})
 
     accounts_config_path = st.common.get_config_path("accounts.config")
 
-    l = []
+    accounts = []
     if os.path.exists(accounts_config_path):
-        c.read(accounts_config_path)
+        config.read(accounts_config_path)
 
-        for name in c.sections():
-            l.append(Account(name = name,
-                             server = c.get(name, "server"),
-                             username = c.get(name, "username"),
-                             password = c.get(name, "password"),
-                             password_hash = c.get(name, "md5_password_hash"),
-                             submit_url = c.get(name, "submit_url"),
-                             client_version = st.common.version
-                            ))
+        for name in config.sections():
+            accounts.append(Account(name = name,
+                                    server = config.get(name, "server"),
+                                    username = config.get(name, "username"),
+                                    password = config.get(name, "password"),
+                                    password_hash = config.get(name, "md5_password_hash"),
+                                    submit_url = config.get(name, "submit_url"),
+                                    client_version = st.common.version
+                                   ))
 
-    return l
+    return accounts
 
 def write_default_accounts():
     text = """# Enable one or more of these accounts
@@ -133,6 +133,6 @@ def write_default_accounts():
 
     make_dir(path)
 
-    fp = open(path, "w")
-    fp.write(text)
-    fp.close()
+    default_file = open(path, "w")
+    default_file.write(text)
+    default_file.close()

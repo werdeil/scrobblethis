@@ -61,14 +61,14 @@ def parse(path):
     # read tracks
     tracks = []
     for line in lines[3:]:
-        v = line.split('\t')
-        if len(v) == 1:
+        track_tuple = line.split('\t')
+        if len(track_tuple) == 1:
             # Case separator is not tab but ', '
-            v = line.split(', ')
-        if len(v) < 8:
-            v = v + [""]*(8-len(v)) # pad v with empty strings
-        v[6] = str(int(v[6]) - tz_offset)
-        track = Track(*v)
+            track_tuple = line.split(', ')
+        if len(track_tuple) < 8:
+            track_tuple = track_tuple + [""]*(8-len(track_tuple)) # pad v with empty strings
+        track_tuple[6] = str(int(track_tuple[6]) - tz_offset)
+        track = Track(*track_tuple)
         if track.rating == "L":
             tracks.append(track)
 
@@ -76,8 +76,8 @@ def parse(path):
 
 def _get_history():
     try:
-        fp = open(st.common.get_config_path("history"))
-        return json.load(fp)
+        history = open(st.common.get_config_path("history"))
+        return json.load(history)
     except IOError:
         return []
 
@@ -99,7 +99,7 @@ def get_paths(*paths):
         # just use it and and it to history for later
         _add_to_history(*paths)
 
-    l = []
+    scrobbler_files = []
     for path in paths:
         path = os.path.expanduser(path)
 
@@ -107,6 +107,6 @@ def get_paths(*paths):
             path = os.path.join(path, ".scrobbler.log")
 
         if os.path.exists(path):
-            l.append(path)
+            scrobbler_files.append(path)
 
-    return l
+    return scrobbler_files
