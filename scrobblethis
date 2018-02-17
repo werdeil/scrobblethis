@@ -23,6 +23,7 @@ def main():
                                    version = "%s\nWritten by: Vincent Verdeil <werdeil@hotmail.com>" %(common.version))
 
     parser.add_option("-q", "--quiet", action="store_true", default=False)
+    parser.add_option("-r", "--remove", action="store_true", default=False)
     global OPTIONS
     (OPTIONS, args) = parser.parse_args()
 
@@ -64,13 +65,15 @@ def main():
 
     # success
     say ("\nAll tracks were scrobbled successfully.")
-    try:
-        for path in paths:
-            os.remove(path)
-        say("All log files were removed.")
-    except:
-        say("Some or all log files could not be removed. Please remove them manually.")
-        say("\n".join(paths))
+
+    if OPTIONS.remove:
+        try:
+            for path in paths:
+                os.remove(path)
+            say("All log files were removed.")
+        except:
+            say("Some or all log files could not be removed. Please remove them manually.")
+            say("\n".join(paths))
 
     sys.exit(0)
 
